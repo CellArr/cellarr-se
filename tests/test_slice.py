@@ -137,18 +137,24 @@ class TestSliceWithQuery:
         assert result.shape[0] == 7
         assert list(result.column_data.columns) == ["tissue"]
 
-    @pytest.mark.parametrize("kwargs", [
-        {"row_subset": slice(0, 5), "row_query": "gene_type == 'protein'"},
-        {"col_subset": slice(0, 3), "col_query": "tissue == 'liver'"},
-    ])
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"row_subset": slice(0, 5), "row_query": "gene_type == 'protein'"},
+            {"col_subset": slice(0, 3), "col_query": "tissue == 'liver'"},
+        ],
+    )
     def test_query_and_subset_mutually_exclusive(self, sample_cellarr_se_named, kwargs):
         with pytest.raises(ValueError, match="Cannot specify both"):
             sample_cellarr_se_named.slice(**kwargs)
 
-    @pytest.mark.parametrize("kwargs,match", [
-        ({"row_query": "gene_type == 'protein'"}, "row_query requires a string-indexed"),
-        ({"col_query": "tissue == 'liver'"}, "col_query requires a string-indexed"),
-    ])
+    @pytest.mark.parametrize(
+        "kwargs,match",
+        [
+            ({"row_query": "gene_type == 'protein'"}, "row_query requires a string-indexed"),
+            ({"col_query": "tissue == 'liver'"}, "col_query requires a string-indexed"),
+        ],
+    )
     def test_query_on_dense_frame_raises(self, sample_cellarr_se, kwargs, match):
         """Queries require string-indexed frames — dense frames have no named attributes."""
         with pytest.raises(ValueError, match=match):

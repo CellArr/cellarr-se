@@ -23,12 +23,17 @@ class TestCellArraySEInit:
         with pytest.raises(TypeError, match="must be a dictionary"):
             CellArraySE(assays=[], row_data=sample_row_data, col_data=sample_col_data)
 
-    @pytest.mark.parametrize("kwargs,match", [
-        ({"assays": {"x": "not_a_cellarray"}}, "must be a CellArray"),
-        ({"row_data": "not_a_frame"}, "row_data must be a CellArrayFrame"),
-        ({"col_data": "not_a_frame"}, "col_data must be a CellArrayFrame"),
-    ])
-    def test_init_invalid_component_type_raises(self, kwargs, match, sample_counts_assay, sample_row_data, sample_col_data):
+    @pytest.mark.parametrize(
+        "kwargs,match",
+        [
+            ({"assays": {"x": "not_a_cellarray"}}, "must be a CellArray"),
+            ({"row_data": "not_a_frame"}, "row_data must be a CellArrayFrame"),
+            ({"col_data": "not_a_frame"}, "col_data must be a CellArrayFrame"),
+        ],
+    )
+    def test_init_invalid_component_type_raises(
+        self, kwargs, match, sample_counts_assay, sample_row_data, sample_col_data
+    ):
         base = {"assays": {"counts": sample_counts_assay}, "row_data": sample_row_data, "col_data": sample_col_data}
         base.update(kwargs)
         with pytest.raises(TypeError, match=match):
@@ -71,7 +76,6 @@ class TestCellArraySEProperties:
 
     def test_dims(self, sample_cellarr_se):
         assert sample_cellarr_se.dims == (10, 5)
-
 
     def test_assay_names(self, sample_cellarr_se):
         assert set(sample_cellarr_se.assay_names) == {"counts", "tpm"}
