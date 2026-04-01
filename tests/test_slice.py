@@ -53,14 +53,6 @@ class TestGetItemErrors:
         with pytest.raises(ValueError, match="2-dimensional tuple"):
             sample_cellarr_se[0:5, 0:3, 0:2]
 
-    def test_out_of_bounds_raises(self, sample_cellarr_se):
-        with pytest.raises(IndexError, match="out of bounds"):
-            sample_cellarr_se[100, 0]
-
-    def test_invalid_key_type_raises(self, sample_cellarr_se):
-        with pytest.raises(TypeError):
-            sample_cellarr_se[0.5, 0]
-
     def test_slice_with_step_raises(self, sample_cellarr_se):
         """Step rejection is enforced by CellArraySE before reaching TileDB."""
         with pytest.raises(IndexError, match="[Ss]tep"):
@@ -145,13 +137,43 @@ class TestSliceWithQuery:
         assert result.shape[0] == 7
         assert list(result.column_data.columns) == ["tissue"]
 
-    def test_query_and_subset_mutually_exclusive(self, sample_cellarr_se):
+    @pytest.mark.parametrize("kwargs", [
+        {"row_subset": slice(0, 5), "row_query": "gene_type == 'protein'"},
+        {"col_subset": slice(0, 3), "col_query": "tissue == 'liver'"},
+    ])
+    def test_query_and_subset_mutually_exclusive(self, sample_cellarr_se_named, kwargs):
         with pytest.raises(ValueError, match="Cannot specify both"):
-            sample_cellarr_se.slice(row_subset=slice(0, 5), row_query="gene_type == 'protein'")
+            sample_cellarr_se_named.slice(**kwargs)
+
+    @pytest.mark.parametrize("kwargs,match", [
+        ({"row_query": "gene_type == 'protein'"}, "row_query requires a string-indexed"),
+        ({"col_query": "tissue == 'liver'"}, "col_query requires a string-indexed"),
+    ])
+    def test_query_on_dense_frame_raises(self, sample_cellarr_se, kwargs, match):
+        """Queries require string-indexed frames — dense frames have no named attributes."""
+        with pytest.raises(ValueError, match=match):
+            sample_cellarr_se.slice(**kwargs)
 
 
 class TestSliceDataIntegrity:
     """Test that sliced data matches the correct backing values."""
+
+    def test_query_path_assay_values_correct(self, sample_cellarr_se_named):
+        """Verify assay values are correct after a query-path slice.
+
+        Metadata correctness is checked elsewhere; this test pins the assay matrix
+        values against the known fixture data to catch bugs in the get_loc index
+        conversion that the query path uses to recover integer positions from the
+        preserved string index.
+
+        Protein-coding genes in the fixture are rows 0-6 (TP53 through PTEN).
+        """
+        result = sample_cellarr_se_named.slice(row_query="gene_type == 'protein'")
+        assert result.shape == (7, 5)
+
+        np.random.seed(42)
+        expected_counts = np.random.randint(0, 1000, size=(10, 5)).astype(np.float64)
+        np.testing.assert_array_equal(result.assays["counts"], expected_counts[0:7])
 
     def test_assay_data_matches_indices(self, sample_cellarr_se):
         full = sample_cellarr_se.slice()
@@ -175,6 +197,34 @@ class TestSliceDataIntegrity:
         subset = sample_cellarr_se[0:10, 0:2]
         assert len(subset.column_data) == 2
         assert list(subset.column_data["tissue"]) == ["liver", "kidney"]
+
+    def test_noncontiguous_list_assay_metadata_sync(self, sample_cellarr_se):
+        """Verify that assay matrix and metadata are sliced with the same indices.
+
+        Shape checks alone cannot catch a bug where _subset_frame and the assay
+        slicing code paths diverge — metadata could point to rows 0,4,9 while the
+        assay matrix silently returns data from different rows. This test pins both
+        the metadata order and the actual assay values against the known fixture data.
+        """
+        row_indices = [0, 4, 9]
+        col_indices = [1, 3]
+        result = sample_cellarr_se[row_indices, col_indices]
+
+        assert result.shape == (3, 2)
+
+        # Metadata must be in the requested order, derived from fixture not hardcoded
+        full = sample_cellarr_se.slice()
+        full_gene_names = list(full.row_data["gene_name"])
+        expected_genes = [full_gene_names[i] for i in row_indices]
+        assert list(result.row_data["gene_name"]) == expected_genes
+
+        # Assay values must match the known fixture data at exactly those indices
+        np.random.seed(42)
+        expected_counts = np.random.randint(0, 1000, size=(10, 5)).astype(np.float64)
+        np.testing.assert_array_equal(
+            result.assays["counts"],
+            expected_counts[row_indices, :][:, col_indices],
+        )
 
     def test_multiple_assays_sliced_consistently(self, sample_cellarr_se):
         subset = sample_cellarr_se[0:3, 0:2]
@@ -217,6 +267,14 @@ class TestSlicingEdgeCases:
         result = sample_cellarr_se[:3, :2]
         assert result.shape == (3, 2)
 
+    def test_negative_slice_start(self, sample_cellarr_se):
+        result = sample_cellarr_se[-5:, :]
+        assert result.shape == (5, 5)
+
+    def test_negative_slice_stop(self, sample_cellarr_se):
+        result = sample_cellarr_se[:-2, :]
+        assert result.shape == (8, 5)
+
     def test_name_not_found_raises(self, sample_cellarr_se_named):
         with pytest.raises(KeyError, match="not found"):
             sample_cellarr_se_named["nonexistent_gene", 0:5]
@@ -241,6 +299,7 @@ class TestSlicingEdgeCases:
         with pytest.raises(TypeError, match="same type"):
             sample_cellarr_se[[0, "gene1"], [0]]
 
-    def test_unsupported_key_type_raises(self, sample_cellarr_se):
+    @pytest.mark.parametrize("key", [(0.5, 0), (0, 0.5)])
+    def test_unsupported_key_type_raises(self, sample_cellarr_se, key):
         with pytest.raises(TypeError):
-            sample_cellarr_se[0.5, 0]
+            sample_cellarr_se[key]

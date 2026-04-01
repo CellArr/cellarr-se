@@ -23,6 +23,17 @@ class TestCellArraySEInit:
         with pytest.raises(TypeError, match="must be a dictionary"):
             CellArraySE(assays=[], row_data=sample_row_data, col_data=sample_col_data)
 
+    @pytest.mark.parametrize("kwargs,match", [
+        ({"assays": {"x": "not_a_cellarray"}}, "must be a CellArray"),
+        ({"row_data": "not_a_frame"}, "row_data must be a CellArrayFrame"),
+        ({"col_data": "not_a_frame"}, "col_data must be a CellArrayFrame"),
+    ])
+    def test_init_invalid_component_type_raises(self, kwargs, match, sample_counts_assay, sample_row_data, sample_col_data):
+        base = {"assays": {"counts": sample_counts_assay}, "row_data": sample_row_data, "col_data": sample_col_data}
+        base.update(kwargs)
+        with pytest.raises(TypeError, match=match):
+            CellArraySE(**base)
+
     def test_init_mismatched_shape_raises(self, temp_dir, sample_row_data, sample_col_data, sample_counts_assay):
         """All assays must share the same shape; a single outlier should fail validation."""
         import os
