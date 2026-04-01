@@ -4,6 +4,10 @@ import pytest
 import numpy as np
 from summarizedexperiment import SummarizedExperiment
 
+__author__ = "chanjd"
+__copyright__ = "chanjd"
+__license__ = "MIT"
+
 
 class TestGetItemBasic:
     """Test __getitem__ bracket notation."""
@@ -232,6 +236,10 @@ class TestSlicingEdgeCases:
     def test_index_out_of_bounds_in_list(self, sample_cellarr_se):
         with pytest.raises(IndexError, match="out of bounds"):
             sample_cellarr_se[[0, 100], [0]]
+
+    def test_mixed_type_list_raises(self, sample_cellarr_se):
+        with pytest.raises(TypeError, match="same type"):
+            sample_cellarr_se[[0, "gene1"], [0]]
 
     def test_unsupported_key_type_raises(self, sample_cellarr_se):
         with pytest.raises(TypeError):

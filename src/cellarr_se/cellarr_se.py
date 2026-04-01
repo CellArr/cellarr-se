@@ -3,9 +3,10 @@ A logical, read-only coordinator for TileDB-backed multi-dimensional datasets.
 
 This class synchronizes slicing and metadata retrieval across multiple out-of-core
 components:
-    - Assays: A dictionary of `cellarr-array` objects (Dense or Sparse).
-    - Row Data: An aligned `cellarr-frame` for row-wise annotations.
-    - Column Data: An aligned `cellarr-frame` for column-wise annotations.
+
+- Assays: A dictionary of `cellarr-array` objects (Dense or Sparse).
+- Row Data: An aligned `cellarr-frame` for row-wise annotations.
+- Column Data: An aligned `cellarr-frame` for column-wise annotations.
 
 CellArrSE maintains data on disk, performing synchronized "lazy" slices that
 return standard in-memory `summarizedexperiment.SummarizedExperiment` objects
@@ -21,6 +22,10 @@ from cellarr_array import SparseCellArray
 from cellarr_array.core import CellArray
 from cellarr_frame import CellArrayFrame
 from summarizedexperiment import SummarizedExperiment
+
+__author__ = "chanjd"
+__copyright__ = "chanjd"
+__license__ = "MIT"
 
 
 def _get_frame_index(frame: CellArrayFrame) -> pd.Index:
@@ -183,6 +188,8 @@ class CellArrSE:
         Returns:
             True if the assay is a SparseCellArray, False otherwise.
         """
+        if assay_name not in self.assays:
+            raise KeyError(f"Assay '{assay_name}' not found.")
         return isinstance(self.assays[assay_name], SparseCellArray)
 
     def get_assay_type(self, assay_name: str) -> np.dtype:
@@ -282,7 +289,7 @@ class CellArrSE:
         if isinstance(key, slice):
             if key.step is not None:
                 raise IndexError("Slice steps (strides) are not supported.")
-            start = key.start or 0
+            start = key.start if key.start is not None else 0
             stop = key.stop if key.stop is not None else dim_size
             if start < 0:
                 start = dim_size + start
@@ -299,6 +306,8 @@ class CellArrSE:
         if isinstance(key, list):
             if not key:
                 return []
+            if not all(isinstance(k, type(key[0])) for k in key):
+                raise TypeError("List elements must all be the same type, got mixed types.")
             if isinstance(key[0], int):
                 # List of integers
                 resolved = []
@@ -358,9 +367,6 @@ class CellArrSE:
                 return handle[:, columns]
             return handle[:]
 
-        # Resolve all subset types to indices (handles negatives, names, etc.)
-        if names is None or dim_size is None:
-            raise ValueError("names and dim_size required for subsetting.")
         indices = self._resolve_key_to_indices(subset, names, dim_size)
 
         # Convert integer indices to names for string-indexed frames

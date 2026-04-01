@@ -4,6 +4,10 @@ import pytest
 import numpy as np
 from cellarr_se import CellArrSE
 
+__author__ = "chanjd"
+__copyright__ = "chanjd"
+__license__ = "MIT"
+
 
 class TestCellArrSEInit:
     """Test CellArrSE initialization and validation."""
@@ -55,8 +59,8 @@ class TestCellArrSEProperties:
         assert sample_cellarr_se.shape == (10, 5)
 
     def test_dims(self, sample_cellarr_se):
-        """dims is an alias for shape, exposed for R-convention compatibility."""
         assert sample_cellarr_se.dims == (10, 5)
+
 
     def test_assay_names(self, sample_cellarr_se):
         assert set(sample_cellarr_se.assay_names) == {"counts", "tpm"}
@@ -124,6 +128,10 @@ class TestCellArrSEAssayIntrospection:
 
     def test_is_sparse_false(self, sample_cellarr_se):
         assert sample_cellarr_se.is_sparse("counts") is False
+
+    def test_is_sparse_unknown_assay_raises(self, sample_cellarr_se):
+        with pytest.raises(KeyError, match="not found"):
+            sample_cellarr_se.is_sparse("nonexistent")
 
     def test_mixed_dense_sparse(self, sample_cellarr_se_mixed):
         assert sample_cellarr_se_mixed.is_sparse("sparse_counts") is True
