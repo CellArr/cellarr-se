@@ -297,6 +297,9 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
     "setuptools": ("https://setuptools.pypa.io/en/stable/", None),
     "pyscaffold": ("https://pyscaffold.org/en/stable", None),
+    "tiledb": ("https://tiledb-inc-tiledb.readthedocs-hosted.com/projects/tiledb-py/en/stable/", None),
+    "cellarr-array": ("https://cellarr.github.io/cellarr-array/", None),
+    "cellarr-frame": ("https://cellarr.github.io/cellarr-frame/", None),
 }
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)
