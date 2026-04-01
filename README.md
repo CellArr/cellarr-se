@@ -89,3 +89,8 @@ se.get_assay_type("counts")   # numpy dtype of the assay
 ## Demo
 
 A worked example covering construction, inspection, and slicing is available in the [demo notebook](https://cellarr-se.readthedocs.io/en/latest/demo.html).
+
+## Note
+
+This project has been set up using [BiocSetup](https://github.com/biocpy/biocsetup)
+and [PyScaffold](https://pyscaffold.org/).
