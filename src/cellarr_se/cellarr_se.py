@@ -502,28 +502,40 @@ class CellArraySE:
         if row_query is not None:
             # Query path: frame subset first, then convert preserved string index to positions
             df_row = self._subset_frame(
-                self.row_data, query=row_query, columns=row_columns,
-                names=self.row_names, dim_size=self.shape[0],
+                self.row_data,
+                query=row_query,
+                columns=row_columns,
+                names=self.row_names,
+                dim_size=self.shape[0],
             )
             row_indices = [self.row_names.get_loc(name) for name in df_row.index.tolist()]
         else:
             row_indices = self._resolve_key_to_indices(row_subset, self.row_names, self.shape[0])
             df_row = self._subset_frame(
-                self.row_data, subset=row_subset, columns=row_columns,
-                names=self.row_names, dim_size=self.shape[0],
+                self.row_data,
+                subset=row_subset,
+                columns=row_columns,
+                names=self.row_names,
+                dim_size=self.shape[0],
             )
 
         if col_query is not None:
             df_col = self._subset_frame(
-                self.col_data, query=col_query, columns=col_columns,
-                names=self.col_names, dim_size=self.shape[1],
+                self.col_data,
+                query=col_query,
+                columns=col_columns,
+                names=self.col_names,
+                dim_size=self.shape[1],
             )
             col_indices = [self.col_names.get_loc(name) for name in df_col.index.tolist()]
         else:
             col_indices = self._resolve_key_to_indices(col_subset, self.col_names, self.shape[1])
             df_col = self._subset_frame(
-                self.col_data, subset=col_subset, columns=col_columns,
-                names=self.col_names, dim_size=self.shape[1],
+                self.col_data,
+                subset=col_subset,
+                columns=col_columns,
+                names=self.col_names,
+                dim_size=self.shape[1],
             )
 
         # Determine which assays to include
