@@ -1,0 +1,21 @@
+cellarr\_se package
+===================
+
+Submodules
+----------
+
+cellarr\_se.cellarr\_se module
+------------------------------
+
+.. automodule:: cellarr_se.cellarr_se
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: cellarr_se
+   :members:
+   :show-inheritance:
+   :undoc-members:
