@@ -8,6 +8,6 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .cellarr_se import CellArrSE
+from .cellarr_se import CellArraySE
 
-__all__ = ["CellArrSE"]
+__all__ = ["CellArraySE"]

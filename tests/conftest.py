@@ -179,10 +179,10 @@ def sample_sparse_counts_assay(temp_dir):
 
 @pytest.fixture
 def sample_cellarr_se(sample_row_data, sample_col_data, sample_counts_assay, sample_tpm_assay):
-    """Create a complete CellArrSE object with dense assays for testing."""
-    from cellarr_se import CellArrSE
+    """Create a complete CellArraySE object with dense assays for testing."""
+    from cellarr_se import CellArraySE
 
-    return CellArrSE(
+    return CellArraySE(
         assays={"counts": sample_counts_assay, "tpm": sample_tpm_assay},
         row_data=sample_row_data,
         col_data=sample_col_data,
@@ -191,10 +191,10 @@ def sample_cellarr_se(sample_row_data, sample_col_data, sample_counts_assay, sam
 
 @pytest.fixture
 def sample_cellarr_se_named(sample_row_data_named, sample_col_data_named, sample_counts_assay, sample_tpm_assay):
-    """Create a CellArrSE object with string-indexed frames for testing."""
-    from cellarr_se import CellArrSE
+    """Create a CellArraySE object with string-indexed frames for testing."""
+    from cellarr_se import CellArraySE
 
-    return CellArrSE(
+    return CellArraySE(
         assays={"counts": sample_counts_assay, "tpm": sample_tpm_assay},
         row_data=sample_row_data_named,
         col_data=sample_col_data_named,
@@ -203,10 +203,10 @@ def sample_cellarr_se_named(sample_row_data_named, sample_col_data_named, sample
 
 @pytest.fixture
 def sample_cellarr_se_sparse(sample_row_data, sample_col_data, sample_sparse_counts_assay):
-    """Create a CellArrSE object with sparse assay for testing."""
-    from cellarr_se import CellArrSE
+    """Create a CellArraySE object with sparse assay for testing."""
+    from cellarr_se import CellArraySE
 
-    return CellArrSE(
+    return CellArraySE(
         assays={"counts": sample_sparse_counts_assay},
         row_data=sample_row_data,
         col_data=sample_col_data,
@@ -215,10 +215,10 @@ def sample_cellarr_se_sparse(sample_row_data, sample_col_data, sample_sparse_cou
 
 @pytest.fixture
 def sample_cellarr_se_mixed(sample_row_data, sample_col_data, sample_counts_assay, sample_sparse_counts_assay):
-    """Create a CellArrSE object with mixed dense and sparse assays."""
-    from cellarr_se import CellArrSE
+    """Create a CellArraySE object with mixed dense and sparse assays."""
+    from cellarr_se import CellArraySE
 
-    return CellArrSE(
+    return CellArraySE(
         assays={"dense_counts": sample_counts_assay, "sparse_counts": sample_sparse_counts_assay},
         row_data=sample_row_data,
         col_data=sample_col_data,
@@ -227,10 +227,10 @@ def sample_cellarr_se_mixed(sample_row_data, sample_col_data, sample_counts_assa
 
 @pytest.fixture
 def sample_cellarr_se_sparse_frames(sample_row_data_sparse_int, sample_col_data_sparse_int, sample_counts_assay):
-    """Create a CellArrSE object with sparse frames (integer index) for testing."""
-    from cellarr_se import CellArrSE
+    """Create a CellArraySE object with sparse frames (integer index) for testing."""
+    from cellarr_se import CellArraySE
 
-    return CellArrSE(
+    return CellArraySE(
         assays={"counts": sample_counts_assay},
         row_data=sample_row_data_sparse_int,
         col_data=sample_col_data_sparse_int,

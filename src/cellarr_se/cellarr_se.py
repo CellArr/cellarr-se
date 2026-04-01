@@ -8,7 +8,7 @@ components:
 - Row Data: An aligned `cellarr-frame` for row-wise annotations.
 - Column Data: An aligned `cellarr-frame` for column-wise annotations.
 
-CellArrSE maintains data on disk, performing synchronized "lazy" slices that
+CellArraySE maintains data on disk, performing synchronized "lazy" slices that
 return standard in-memory `summarizedexperiment.SummarizedExperiment` objects
 only when requested.
 """
@@ -104,7 +104,7 @@ def _validate_input(assays: Dict[str, CellArray], row_data: CellArrayFrame, col_
             raise ValueError(f"Assay '{name}' shape {arr.shape} != {base_shape}.")
 
 
-class CellArrSE:
+class CellArraySE:
     def __init__(
         self,
         assays: Dict[str, CellArray],
@@ -225,7 +225,7 @@ class CellArrSE:
                 Number of rows to display from row_data and col_data.
                 Defaults to 5.
         """
-        print(f"CellArrSE Object | {self.shape[0]} rows x {self.shape[1]} cols")
+        print(f"CellArraySE Object | {self.shape[0]} rows x {self.shape[1]} cols")
         print(f"Assays: {', '.join(self.assay_names)}")
         print("\n--- Row Data ---")
         # Use row_names for slicing to support string-indexed frames
@@ -390,7 +390,7 @@ class CellArrSE:
         row_columns: Optional[List[str]] = None,
         col_columns: Optional[List[str]] = None,
     ) -> SummarizedExperiment:
-        """Slice the CellArrSE to produce an in-memory SummarizedExperiment.
+        """Slice the CellArraySE to produce an in-memory SummarizedExperiment.
 
         This method provides full control over subsetting, including TileDB query
         support. For simple positional/name-based access, use bracket notation
@@ -602,4 +602,4 @@ class CellArrSE:
 
     def __repr__(self) -> str:
         """String representation showing shape and assay names."""
-        return f"<CellArrSE: {self.shape[0]}x{self.shape[1]} | {', '.join(self.assay_names)}>"
+        return f"<CellArraySE: {self.shape[0]}x{self.shape[1]} | {', '.join(self.assay_names)}>"

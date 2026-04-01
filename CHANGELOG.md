@@ -4,7 +4,7 @@
 
 Initial public release.
 
-- `CellArrSE`: read-only, out-of-core coordinator wrapping `cellarr-array` assay matrices and `cellarr-frame` row/column metadata tables.
+- `CellArraySE`: read-only, out-of-core coordinator wrapping `cellarr-array` assay matrices and `cellarr-frame` row/column metadata tables.
 - Lazy, synchronized slicing across all components — data is only loaded when a slice is materialized.
 - Bracket notation (`se[rows, cols]`) supporting integer indices, slices, name strings, and lists of either.
 - `slice()` method with TileDB query string support for attribute-filtered access on rows and columns.

@@ -1,4 +1,4 @@
-"""Tests for CellArrSE slicing and subsetting functionality."""
+"""Tests for CellArraySE slicing and subsetting functionality."""
 
 import pytest
 import numpy as np
@@ -62,7 +62,7 @@ class TestGetItemErrors:
             sample_cellarr_se[0.5, 0]
 
     def test_slice_with_step_raises(self, sample_cellarr_se):
-        """Step rejection is enforced by CellArrSE before reaching TileDB."""
+        """Step rejection is enforced by CellArraySE before reaching TileDB."""
         with pytest.raises(IndexError, match="[Ss]tep"):
             sample_cellarr_se[0:10:2, 0:5]
 

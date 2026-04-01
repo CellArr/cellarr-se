@@ -1,27 +1,27 @@
-"""Tests for CellArrSE core functionality."""
+"""Tests for CellArraySE core functionality."""
 
 import pytest
 import numpy as np
-from cellarr_se import CellArrSE
+from cellarr_se import CellArraySE
 
 __author__ = "chanjd"
 __copyright__ = "chanjd"
 __license__ = "MIT"
 
 
-class TestCellArrSEInit:
-    """Test CellArrSE initialization and validation."""
+class TestCellArraySEInit:
+    """Test CellArraySE initialization and validation."""
 
     def test_init_success(self, sample_cellarr_se):
         assert sample_cellarr_se.shape == (10, 5)
 
     def test_init_empty_assays_raises(self, sample_row_data, sample_col_data):
         with pytest.raises(ValueError, match="cannot be empty"):
-            CellArrSE(assays={}, row_data=sample_row_data, col_data=sample_col_data)
+            CellArraySE(assays={}, row_data=sample_row_data, col_data=sample_col_data)
 
     def test_init_invalid_assays_type_raises(self, sample_row_data, sample_col_data):
         with pytest.raises(TypeError, match="must be a dictionary"):
-            CellArrSE(assays=[], row_data=sample_row_data, col_data=sample_col_data)
+            CellArraySE(assays=[], row_data=sample_row_data, col_data=sample_col_data)
 
     def test_init_mismatched_shape_raises(self, temp_dir, sample_row_data, sample_col_data, sample_counts_assay):
         """All assays must share the same shape; a single outlier should fail validation."""
@@ -45,15 +45,15 @@ class TestCellArrSEInit:
         wrong_array = DenseCellArray(uri)
 
         with pytest.raises(ValueError, match="shape"):
-            CellArrSE(
+            CellArraySE(
                 assays={"counts": sample_counts_assay, "wrong": wrong_array},
                 row_data=sample_row_data,
                 col_data=sample_col_data,
             )
 
 
-class TestCellArrSEProperties:
-    """Test CellArrSE property accessors."""
+class TestCellArraySEProperties:
+    """Test CellArraySE property accessors."""
 
     def test_shape(self, sample_cellarr_se):
         assert sample_cellarr_se.shape == (10, 5)
@@ -96,21 +96,21 @@ class TestCellArrSEProperties:
         assert set(sample_cellarr_se.col_columns) == {"sample_id", "tissue", "treatment"}
 
 
-class TestCellArrSERepr:
+class TestCellArraySERepr:
     """Test string representation and display."""
 
     def test_repr_format(self, sample_cellarr_se):
-        assert repr(sample_cellarr_se) == "<CellArrSE: 10x5 | counts, tpm>"
+        assert repr(sample_cellarr_se) == "<CellArraySE: 10x5 | counts, tpm>"
 
     def test_show_runs(self, sample_cellarr_se, capsys):
         sample_cellarr_se.show()
         out = capsys.readouterr().out
-        assert "CellArrSE" in out
+        assert "CellArraySE" in out
         assert "10" in out
         assert "5" in out
 
 
-class TestCellArrSEAssayIntrospection:
+class TestCellArraySEAssayIntrospection:
     """Test assay introspection methods."""
 
     def test_get_assay_type_returns_dtype(self, sample_cellarr_se):
@@ -139,7 +139,7 @@ class TestCellArrSEAssayIntrospection:
 
 
 class TestNamedFrames:
-    """Test CellArrSE with string-indexed CellArrayFrames."""
+    """Test CellArraySE with string-indexed CellArrayFrames."""
 
     def test_init(self, sample_cellarr_se_named):
         assert sample_cellarr_se_named.shape == (10, 5)
@@ -163,7 +163,7 @@ class TestNamedFrames:
 
 
 class TestSparseFramesIntIndex:
-    """Test CellArrSE with sparse CellArrayFrames (integer index).
+    """Test CellArraySE with sparse CellArrayFrames (integer index).
 
     Distinct from sparse *assays* (SparseCellArray): here the metadata frames
     themselves are sparse TileDB arrays, but their index is integer rather than

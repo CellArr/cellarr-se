@@ -18,12 +18,12 @@ pip install cellarr-se
 
 ### Construction
 
-`CellArrSE` wraps existing TileDB arrays and frames; it does not create them. Use `cellarr-array` and `cellarr-frame` to build the backing stores first.
+`CellArraySE` wraps existing TileDB arrays and frames; it does not create them. Use `cellarr-array` and `cellarr-frame` to build the backing stores first.
 
 ```python
-from cellarr_se import CellArrSE
+from cellarr_se import CellArraySE
 
-se = CellArrSE(
+se = CellArraySE(
     assays={"counts": my_cell_array, "tpm": my_tpm_array},
     row_data=my_row_frame,   # gene annotations (CellArrayFrame)
     col_data=my_col_frame,   # sample annotations (CellArrayFrame)
@@ -41,7 +41,7 @@ se.row_columns    # list of gene metadata fields
 se.col_columns    # list of sample metadata fields
 
 se.show()         # print a summary with the first 5 rows of each metadata table
-repr(se)          # <CellArrSE: 20000x500 | counts, tpm>
+repr(se)          # <CellArraySE: 20000x500 | counts, tpm>
 ```
 
 ### Slicing
@@ -85,3 +85,7 @@ Both `se[...]` and `se.slice(...)` return a standard in-memory `SummarizedExperi
 se.is_sparse("counts")        # True if backed by SparseCellArray
 se.get_assay_type("counts")   # numpy dtype of the assay
 ```
+
+## Demo
+
+A worked example covering construction, inspection, and slicing is available in the [demo notebook](https://cellarr-se.readthedocs.io/en/latest/demo.html).

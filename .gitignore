@@ -38,6 +38,9 @@ junit*.xml
 coverage.xml
 .pytest_cache/
 
+# Demo notebook generated data
+files/demo/
+
 # Build and docs folder/files
 build/*
 dist/*
