@@ -177,8 +177,6 @@ html_theme = "alabaster"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "sidebar_width": "300px",
-    "page_width": "1200px"
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -299,6 +297,9 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
     "setuptools": ("https://setuptools.pypa.io/en/stable/", None),
     "pyscaffold": ("https://pyscaffold.org/en/stable", None),
+    "tiledb": ("https://tiledb-inc-tiledb.readthedocs-hosted.com/projects/tiledb-py/en/stable/", None),
+    "cellarr-array": ("https://cellarr.github.io/cellarr-array/", None),
+    "cellarr-frame": ("https://cellarr.github.io/cellarr-frame/", None),
 }
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)
