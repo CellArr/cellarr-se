@@ -14,7 +14,6 @@ only when requested.
 """
 
 from functools import cached_property
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -61,10 +60,10 @@ def _get_frame_index(frame: CellArrayFrame) -> pd.Index:
 #:   - ``str``: Single name matching row_names/col_names
 #:   - ``List[str]``: Multiple names (e.g., ``["gene1", "gene2"]``)
 #:   - ``None``: Select all elements in that dimension
-SubsetKey = int | slice | List[int] | str | List[str] | None
+SubsetKey = int | slice | list[int] | str | list[str] | None
 
 
-def _validate_input(assays: Dict[str, CellArray], row_data: CellArrayFrame, col_data: CellArrayFrame):
+def _validate_input(assays: dict[str, CellArray], row_data: CellArrayFrame, col_data: CellArrayFrame):
     """Validate that assays and metadata frames are compatible.
 
     Checks:
@@ -107,7 +106,7 @@ def _validate_input(assays: Dict[str, CellArray], row_data: CellArrayFrame, col_
 class CellArraySE:
     def __init__(
         self,
-        assays: Dict[str, CellArray],
+        assays: dict[str, CellArray],
         row_data: CellArrayFrame,
         col_data: CellArrayFrame,
     ):
@@ -139,13 +138,13 @@ class CellArraySE:
     # --- Shape & Dim Getters ---
 
     @cached_property
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         """Number of rows and columns as (n_rows, n_cols)."""
         first_assay = next(iter(self.assays.values()))
         return first_assay.shape
 
     @property
-    def dims(self) -> Tuple[int, int]:
+    def dims(self) -> tuple[int, int]:
         """Alias for shape."""
         return self.shape
 
@@ -164,17 +163,17 @@ class CellArraySE:
     # --- Metadata Discovery ---
 
     @cached_property
-    def assay_names(self) -> List[str]:
+    def assay_names(self) -> list[str]:
         """Names of available assays."""
         return list(self.assays.keys())
 
     @cached_property
-    def row_columns(self) -> List[str]:
+    def row_columns(self) -> list[str]:
         """Column names of the metadata fields for row_data."""
         return self.row_data.column_names
 
     @cached_property
-    def col_columns(self) -> List[str]:
+    def col_columns(self) -> list[str]:
         """Column names of the metadata fields for column_data."""
         return self.col_data.column_names
 
@@ -242,7 +241,7 @@ class CellArraySE:
         key: SubsetKey,
         names: pd.Index,
         dim_size: int,
-    ) -> List[int]:
+    ) -> list[int]:
         """Convert any subset key type to a list of integer positions.
 
         This normalizes the various ways users can specify subsets (int, slice,
@@ -334,10 +333,10 @@ class CellArraySE:
         self,
         handle: CellArrayFrame,
         subset: SubsetKey = None,
-        query: Optional[str] = None,
-        columns: Optional[List[str]] = None,
-        names: Optional[pd.Index] = None,
-        dim_size: Optional[int] = None,
+        query: str | None = None,
+        columns: list[str] | None = None,
+        names: pd.Index | None = None,
+        dim_size: int | None = None,
     ) -> pd.DataFrame:
         """Subset a CellArrayFrame using either positional/name-based subset or TileDB query.
 
@@ -384,11 +383,11 @@ class CellArraySE:
         self,
         row_subset: SubsetKey = None,
         col_subset: SubsetKey = None,
-        row_query: Optional[str] = None,
-        col_query: Optional[str] = None,
-        assays: Optional[List[str]] = None,
-        row_columns: Optional[List[str]] = None,
-        col_columns: Optional[List[str]] = None,
+        row_query: str | None = None,
+        col_query: str | None = None,
+        assays: list[str] | None = None,
+        row_columns: list[str] | None = None,
+        col_columns: list[str] | None = None,
     ) -> SummarizedExperiment:
         """Slice the CellArraySE to produce an in-memory SummarizedExperiment.
 
@@ -550,7 +549,7 @@ class CellArraySE:
             column_data=df_col,
         )
 
-    def __getitem__(self, key: Tuple[SubsetKey, SubsetKey]) -> SummarizedExperiment:
+    def __getitem__(self, key: tuple[SubsetKey, SubsetKey]) -> SummarizedExperiment:
         """Subset using bracket notation: ``se[rows, cols]``.
 
         This method provides simple positional and name-based subsetting. For
