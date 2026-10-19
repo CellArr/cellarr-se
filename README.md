@@ -25,23 +25,23 @@ from cellarr_se import CellArraySE
 
 se = CellArraySE(
     assays={"counts": my_cell_array, "tpm": my_tpm_array},
-    row_data=my_row_frame,   # gene annotations (CellArrayFrame)
-    col_data=my_col_frame,   # sample annotations (CellArrayFrame)
+    row_data=my_row_frame,  # gene annotations (CellArrayFrame)
+    col_data=my_col_frame,  # sample annotations (CellArrayFrame)
 )
 ```
 
 ### Inspection
 
 ```python
-se.shape          # (n_genes, n_samples)
-se.assay_names    # ["counts", "tpm"]
-se.row_names      # pd.Index of gene identifiers
-se.col_names      # pd.Index of sample identifiers
-se.row_columns    # list of gene metadata fields
-se.col_columns    # list of sample metadata fields
+se.shape  # (n_genes, n_samples)
+se.assay_names  # ["counts", "tpm"]
+se.row_names  # pd.Index of gene identifiers
+se.col_names  # pd.Index of sample identifiers
+se.row_columns  # list of gene metadata fields
+se.col_columns  # list of sample metadata fields
 
-se.show()         # print a summary with the first 5 rows of each metadata table
-repr(se)          # <CellArraySE: 20000x500 | counts, tpm>
+se.show()  # print a summary with the first 5 rows of each metadata table
+repr(se)  # <CellArraySE: 20000x500 | counts, tpm>
 ```
 
 ### Slicing
@@ -82,8 +82,8 @@ Both `se[...]` and `se.slice(...)` return a standard in-memory `SummarizedExperi
 ### Assay metadata
 
 ```python
-se.is_sparse("counts")        # True if backed by SparseCellArray
-se.get_assay_type("counts")   # numpy dtype of the assay
+se.is_sparse("counts")  # True if backed by SparseCellArray
+se.get_assay_type("counts")  # numpy dtype of the assay
 ```
 
 ## Demo
